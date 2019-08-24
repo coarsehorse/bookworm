@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 @Table(name = "books")
@@ -24,6 +25,11 @@ public class Book extends AuditModel {
     @NotBlank
     @Size(min = 1, max = 150)
     private String title;
+
+    @NotBlank
+    @Size(min = 1, max = 150)
+    @Column(unique = true)
+    private String titleLowC;
 
     private Integer pagesNum;
 
@@ -76,6 +82,14 @@ public class Book extends AuditModel {
         this.visitor = visitor;
     }
 
+    public String getTitleLowC() {
+        return titleLowC;
+    }
+
+    public void setTitleLowC(String titleLowC) {
+        this.titleLowC = titleLowC;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
@@ -85,5 +99,19 @@ public class Book extends AuditModel {
                 ", yearOfPublishing=" + yearOfPublishing +
                 ", visitor=" + visitor +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return id.equals(book.id) &&
+                titleLowC.equals(book.titleLowC);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, titleLowC);
     }
 }

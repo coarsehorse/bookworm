@@ -25,23 +25,17 @@ public class BooksController {
         return bookRepository.findAll(Sort.by(Sort.Direction.ASC, "yearOfPublishing"));
     }
 
-    /*@PostMapping("/visitors/{visitorId}/books")
-    public Book addBook(Long visitorId, @Valid @RequestBody Book book) {
-        return visitorRepository.findById(visitorId)
-                .map(visitor -> {
-                    book.setVisitor(visitor);
-                    return bookRepository.save(book);
-                })
-                .orElseThrow(() -> new ResourceNotFoundException("Visitor with id " + visitorId + " not found"));
-    }*/
-
     @PostMapping("/visitors/{visitorId}/books")
     public List<Book> addBooks(@PathVariable Long visitorId, @Valid @RequestBody List<Book> books) {
         return visitorRepository.findById(visitorId)
                 .map(visitor -> {
-                    books.forEach((book -> {
+                    books.forEach(book -> {
                         book.setVisitor(visitor);
-                    }));
+                        book.setTitleLowC(book.getTitle()
+                                .toLowerCase()
+                                .trim()
+                                .replaceAll("\\s+", "_"));
+                    });
                     return bookRepository.saveAll(books);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Visitor with id " + visitorId + " not found"));

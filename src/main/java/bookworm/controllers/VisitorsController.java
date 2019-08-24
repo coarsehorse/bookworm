@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class VisitorsController {
@@ -22,12 +23,12 @@ public class VisitorsController {
 
     @PostMapping("/visitors")
     public List<Visitor> addVisitors(@Valid @RequestBody List<Visitor> visitors) {
-        return visitorRepository.saveAll(visitors);
-    }
-
-    @PostMapping("/visitor")
-    public Visitor addVisitor(@Valid @RequestBody Visitor visitor) {
-        logger.info("Visitor: " + visitor);
-        return visitor;
+        return visitorRepository.saveAll(visitors.stream()
+                .peek(visitor -> visitor.setFullNameLowC(visitor
+                        .getFullName()
+                        .toLowerCase()
+                        .trim()
+                        .replaceAll("\\s+", "_")))
+                .collect(Collectors.toList()));
     }
 }
