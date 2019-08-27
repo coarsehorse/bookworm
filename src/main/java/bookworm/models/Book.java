@@ -9,7 +9,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
+import java.util.Set;
 
+/**
+ * Book domain model
+ */
 @Entity
 @Table(name = "books")
 public class Book extends AuditModel {
@@ -31,16 +35,21 @@ public class Book extends AuditModel {
     @Column(unique = true)
     private String titleLowC;
 
+    @NotNull
+    private Integer quantityInStock;
+
     private Integer pagesNum;
 
     @NotNull
     private Integer yearOfPublishing;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "visitor_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToMany
+    @JoinTable(
+            name = "book_visitor",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "visitor_id"))
     @JsonIgnore
-    private Visitor visitor;
+    private Set<Visitor> visitors;
 
     public Long getId() {
         return id;
@@ -74,20 +83,28 @@ public class Book extends AuditModel {
         this.yearOfPublishing = yearOfPublishing;
     }
 
-    public Visitor getVisitor() {
-        return visitor;
-    }
-
-    public void setVisitor(Visitor visitor) {
-        this.visitor = visitor;
-    }
-
     public String getTitleLowC() {
         return titleLowC;
     }
 
     public void setTitleLowC(String titleLowC) {
         this.titleLowC = titleLowC;
+    }
+
+    public Integer getQuantityInStock() {
+        return quantityInStock;
+    }
+
+    public void setQuantityInStock(Integer quantityInStock) {
+        this.quantityInStock = quantityInStock;
+    }
+
+    public Set<Visitor> getVisitors() {
+        return visitors;
+    }
+
+    public void setVisitors(Set<Visitor> visitors) {
+        this.visitors = visitors;
     }
 
     @Override
@@ -97,7 +114,6 @@ public class Book extends AuditModel {
                 ", title='" + title + '\'' +
                 ", pagesNum=" + pagesNum +
                 ", yearOfPublishing=" + yearOfPublishing +
-                ", visitor=" + visitor +
                 '}';
     }
 

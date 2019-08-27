@@ -2,9 +2,8 @@ package bookworm.controllers;
 
 import bookworm.models.Visitor;
 import bookworm.repositories.VisitorRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +18,10 @@ public class VisitorsController {
     @Autowired
     private VisitorRepository visitorRepository;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @GetMapping("/visitors")
+    public List<Visitor> getVisitors() {
+        return visitorRepository.findAll();
+    }
 
     @PostMapping("/visitors")
     public List<Visitor> addVisitors(@Valid @RequestBody List<Visitor> visitors) {

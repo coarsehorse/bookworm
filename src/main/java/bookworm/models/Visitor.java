@@ -1,10 +1,16 @@
 package bookworm.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Objects;
+import java.util.Set;
 
+/**
+ * Visitor domain model
+ */
 @Entity
 @Table(name = "visitors")
 public class Visitor extends AuditModel {
@@ -25,6 +31,10 @@ public class Visitor extends AuditModel {
     @Size(min = 5, max = 150)
     @Column(unique = true)
     private String fullNameLowC;
+
+    @ManyToMany(mappedBy = "visitors")
+    @JsonIgnore
+    private Set<Book> books;
 
     public Long getId() {
         return id;
@@ -48,6 +58,14 @@ public class Visitor extends AuditModel {
 
     public void setFullNameLowC(String fullNameLowC) {
         this.fullNameLowC = fullNameLowC;
+    }
+
+    public Set<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(Set<Book> books) {
+        this.books = books;
     }
 
     @Override
